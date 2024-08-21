@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-    "github.com/NeerajNagure/KVstore/keyvaluestore"
+	"time"
+
+	"github.com/NeerajNagure/KVstore/keyvaluestore"
 )
 
 func HandleSet(kv *keyvaluestore.KeyValueStore) http.HandlerFunc {
@@ -21,7 +23,7 @@ func HandleSet(kv *keyvaluestore.KeyValueStore) http.HandlerFunc {
    return
   }
 
-  kv.Set(req.Key, req.Value)
+  kv.Set(req.Key, req.Value, 1000*time.Minute)
   w.WriteHeader(http.StatusOK)
  }
 }
@@ -51,7 +53,7 @@ func HandleGet(kv *keyvaluestore.KeyValueStore) http.HandlerFunc {
 }
 
 func main() {
- kv := keyvaluestore.NewKeyValueStore()
+ kv := keyvaluestore.NewKeyValueStore(3,3)
  http.HandleFunc("/set", HandleSet(kv))
  http.HandleFunc("/get", HandleGet(kv))
  port := 8080
